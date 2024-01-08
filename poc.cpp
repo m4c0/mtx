@@ -1,18 +1,10 @@
 #pragma leco tool
+import mtx;
 import silog;
 import sith;
 import sitime;
 
-class mutex {};
-class lock {
-public:
-  lock(const mutex &) {}
-
-  lock(const lock &) = delete;
-  lock(lock &&) = delete;
-  lock &operator=(const lock &) = delete;
-  lock &operator=(lock &&) = delete;
-};
+using namespace mtx;
 
 class thread : public sith::thread {
   mutex *m_mutex{};
