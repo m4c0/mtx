@@ -14,9 +14,9 @@ public:
   ~mutex();
 
   mutex(const mutex &) = delete;
-  mutex(mutex &&) = default;
+  mutex(mutex &&);
   mutex &operator=(const mutex &) = delete;
-  mutex &operator=(mutex &&) = default;
+  mutex &operator=(mutex &&);
 };
 
 export class lock {

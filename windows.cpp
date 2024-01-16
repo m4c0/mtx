@@ -11,7 +11,13 @@ struct mtx::pimpl {
 mtx::mutex::mutex() : m_handle{new mtx::pimpl{}} {
   m_handle->h = CreateMutex(nullptr, false, nullptr);
 }
-mtx::mutex::~mutex() { CloseHandle(m_handle->h); }
+mtx::mutex::~mutex() {
+  if (m_handle)
+    CloseHandle(m_handle->h);
+}
+
+mtx::mutex::mutex(mutex &&) = default;
+mtx::mutex &mtx::mutex::operator=(mutex &&) = default;
 
 mtx::lock::lock(mtx::mutex *m) : m_mutex{m} {
   WaitForSingleObject(m_handle->h, INFINITE);

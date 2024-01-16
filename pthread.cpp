@@ -8,7 +8,13 @@ struct mtx::pimpl : pthread_mutex_t {};
 mtx::mutex::mutex() : m_handle{new mtx::pimpl{}} {
   pthread_mutex_init(&*m_handle, nullptr);
 }
-mtx::mutex::~mutex() { pthread_mutex_destroy(&*m_handle); }
+mtx::mutex::~mutex() {
+  if (m_handle)
+    pthread_mutex_destroy(&*m_handle);
+}
+
+mtx::mutex::mutex(mutex &&) = default;
+mtx::mutex &mtx::mutex::operator=(mutex &&) = default;
 
 mtx::lock::lock(mtx::mutex *m) : m_mutex{m} {
   pthread_mutex_lock(&*(m_mutex->m_handle));
