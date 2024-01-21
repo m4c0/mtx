@@ -1,10 +1,11 @@
 export module mtx;
 import hai;
+import no;
 
 namespace mtx {
 struct pimpl;
 
-export class mutex {
+export class mutex : no::copy {
   hai::uptr<pimpl> m_handle;
 
   friend class lock;
@@ -13,23 +14,16 @@ public:
   mutex();
   ~mutex();
 
-  mutex(const mutex &) = delete;
   mutex(mutex &&);
-  mutex &operator=(const mutex &) = delete;
   mutex &operator=(mutex &&);
 };
 
-export class lock {
+export class lock : no::no {
   mutex *m_mutex;
 
 public:
   lock(mutex *m);
   ~lock();
-
-  lock(const lock &) = delete;
-  lock(lock &&) = delete;
-  lock &operator=(const lock &) = delete;
-  lock &operator=(lock &&) = delete;
 };
 } // namespace mtx
 

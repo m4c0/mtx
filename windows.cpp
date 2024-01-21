@@ -3,8 +3,9 @@ module;
 #include <windows.h>
 
 module mtx;
+import no;
 
-struct mtx::pimpl {
+struct mtx::pimpl : no::no {
   HANDLE h{INVALID_HANDLE_VALUE};
 
   pimpl() : h{CreateMutex(nullptr, false, nullptr)} {}
@@ -12,11 +13,6 @@ struct mtx::pimpl {
     if (h != INVALID_HANDLE_VALUE)
       CloseHandle(h);
   }
-
-  pimpl(const pimpl &) = delete;
-  pimpl(pimpl &&) = delete;
-  pimpl &operator=(const pimpl &) = delete;
-  pimpl &operator=(pimpl &&) = delete;
 };
 
 mtx::mutex::mutex() : m_handle{new mtx::pimpl{}} {}
