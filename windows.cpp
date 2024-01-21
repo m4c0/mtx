@@ -20,6 +20,6 @@ mtx::mutex::mutex(mutex &&) = default;
 mtx::mutex &mtx::mutex::operator=(mutex &&) = default;
 
 mtx::lock::lock(mtx::mutex *m) : m_mutex{m} {
-  WaitForSingleObject(m_handle->h, INFINITE);
+  WaitForSingleObject(m_mutex->m_handle->h, INFINITE);
 }
-mtx::lock::~lock() { ReleaseMutex(m_handle->h); }
+mtx::lock::~lock() { ReleaseMutex(m_mutex->m_handle->h); }
