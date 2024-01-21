@@ -13,10 +13,10 @@ struct mtx::pimpl {
       CloseHandle(h);
   }
 
-  pimpl(const pimpl &) = default;
-  pimpl(pimpl &&) = default;
-  pimpl &operator=(const pimpl &) = default;
-  pimpl &operator=(pimpl &&) = default;
+  pimpl(const pimpl &) = delete;
+  pimpl(pimpl &&) = delete;
+  pimpl &operator=(const pimpl &) = delete;
+  pimpl &operator=(pimpl &&) = delete;
 };
 
 mtx::mutex::mutex() : m_handle{new mtx::pimpl{}} {}
