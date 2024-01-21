@@ -5,16 +5,22 @@ module;
 module mtx;
 
 struct mtx::pimpl {
-  HANDLE h;
+  HANDLE h{INVALID_HANDLE_VALUE};
+
+  pimpl() : h{CreateMutex(nullptr, false, nullptr)} {}
+  ~pimpl() {
+    if (h != INVALID_HANDLE_VALUE)
+      CloseHandle(h);
+  }
+
+  pimpl(const pimpl &) = default;
+  pimpl(pimpl &&) = default;
+  pimpl &operator=(const pimpl &) = default;
+  pimpl &operator=(pimpl &&) = default;
 };
 
-mtx::mutex::mutex() : m_handle{new mtx::pimpl{}} {
-  m_handle->h = CreateMutex(nullptr, false, nullptr);
-}
-mtx::mutex::~mutex() {
-  if (m_handle)
-    CloseHandle(m_handle->h);
-}
+mtx::mutex::mutex() : m_handle{new mtx::pimpl{}} {}
+mtx::mutex::~mutex() = default;
 
 mtx::mutex::mutex(mutex &&) = default;
 mtx::mutex &mtx::mutex::operator=(mutex &&) = default;
