@@ -5,8 +5,6 @@ module;
 module mtx;
 import no;
 
-// FIXME: mutex on Windows must be locked/unlocked from the same thread
-// TODO: use Critical Objects instead of Mutex
 // Windows definition of "Critical Objects" has two main features:
 // - Single-process (mutexes supports multi-process - for MS reasons)
 // - Uses processor primitives instead of kernel calls
@@ -16,13 +14,10 @@ import no;
 // Ref:
 // https://learn.microsoft.com/en-us/windows/win32/sync/critical-section-objects
 struct mtx::mutex::pimpl : no::no {
-  HANDLE h{INVALID_HANDLE_VALUE};
+  CRITICAL_SECTION cs{};
 
-  pimpl() : h{CreateMutex(nullptr, false, nullptr)} {}
-  ~pimpl() {
-    if (h != INVALID_HANDLE_VALUE)
-      CloseHandle(h);
-  }
+  pimpl() : h{InitializeCriticalSection(&cs)} {}
+  ~pimpl() { DeleteCriticalSection(&cs); }
 };
 
 mtx::mutex::mutex() : m_handle{new mtx::mutex::pimpl{}} {}
@@ -32,6 +27,6 @@ mtx::mutex::mutex(mutex &&) = default;
 mtx::mutex &mtx::mutex::operator=(mutex &&) = default;
 
 mtx::lock::lock(mtx::mutex *m) : m_mutex{m} {
-  WaitForSingleObject(m_mutex->m_handle->h, INFINITE);
+  EnterCriticalSection(m_mutex->m_handle->h);
 }
-mtx::lock::~lock() { ReleaseMutex(m_mutex->m_handle->h); }
+mtx::lock::~lock() { LeaveCriticalSection(m_mutex->m_handle->h); }
