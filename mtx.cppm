@@ -7,6 +7,7 @@ export class mutex : no::copy {
   struct pimpl;
   hai::uptr<pimpl> m_handle;
 
+  friend class cond;
   friend class lock;
 
 public:
@@ -20,9 +21,27 @@ public:
 export class lock : no::no {
   mutex *m_mutex;
 
+  friend class cond;
+
 public:
   lock(mutex *m);
   ~lock();
+};
+
+export class cond : no::copy {
+  struct pimpl;
+  hai::uptr<pimpl> m_handle;
+
+public:
+  cond();
+  ~cond();
+
+  cond(cond &&);
+  cond &operator=(cond &&);
+
+  void wait(lock *);
+  void wake_one();
+  void wake_all();
 };
 } // namespace mtx
 
