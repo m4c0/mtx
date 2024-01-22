@@ -6,6 +6,15 @@ module mtx;
 import no;
 
 #warning mutex on Windows must be locked/unlocked from the same thread
+// TODO: use Critical Objects instead of Mutex
+// Windows definition of "Critical Objects" has two main features:
+// - Single-process (mutexes supports multi-process - for MS reasons)
+// - Uses processor primitives instead of kernel calls
+// Therefore, they are more lightweight and faster. And they allow usage of
+// other sync objects, like conditional variables
+//
+// Ref:
+// https://learn.microsoft.com/en-us/windows/win32/sync/critical-section-objects
 struct mtx::pimpl : no::no {
   HANDLE h{INVALID_HANDLE_VALUE};
 
