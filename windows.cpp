@@ -5,7 +5,7 @@ module;
 module mtx;
 import no;
 
-#warning mutex on Windows must be locked/unlocked from the same thread
+// FIXME: mutex on Windows must be locked/unlocked from the same thread
 // TODO: use Critical Objects instead of Mutex
 // Windows definition of "Critical Objects" has two main features:
 // - Single-process (mutexes supports multi-process - for MS reasons)
