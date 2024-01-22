@@ -15,7 +15,7 @@ import no;
 //
 // Ref:
 // https://learn.microsoft.com/en-us/windows/win32/sync/critical-section-objects
-struct mtx::pimpl : no::no {
+struct mtx::mutex::pimpl : no::no {
   HANDLE h{INVALID_HANDLE_VALUE};
 
   pimpl() : h{CreateMutex(nullptr, false, nullptr)} {}
@@ -25,7 +25,7 @@ struct mtx::pimpl : no::no {
   }
 };
 
-mtx::mutex::mutex() : m_handle{new mtx::pimpl{}} {}
+mtx::mutex::mutex() : m_handle{new mtx::mutex::pimpl{}} {}
 mtx::mutex::~mutex() = default;
 
 mtx::mutex::mutex(mutex &&) = default;

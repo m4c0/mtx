@@ -3,9 +3,9 @@ module;
 
 module mtx;
 
-struct mtx::pimpl : pthread_mutex_t {};
+struct mtx::mutex::pimpl : pthread_mutex_t {};
 
-mtx::mutex::mutex() : m_handle{new mtx::pimpl{}} {
+mtx::mutex::mutex() : m_handle{new mtx::mutex::pimpl{}} {
   pthread_mutex_init(&*m_handle, nullptr);
 }
 mtx::mutex::~mutex() {

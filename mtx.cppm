@@ -3,9 +3,8 @@ import hai;
 import no;
 
 namespace mtx {
-struct pimpl;
-
 export class mutex : no::copy {
+  struct pimpl;
   hai::uptr<pimpl> m_handle;
 
   friend class lock;
