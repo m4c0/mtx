@@ -5,6 +5,7 @@ module;
 module mtx;
 import no;
 
+#warning mutex on Windows must be locked/unlocked from the same thread
 struct mtx::pimpl : no::no {
   HANDLE h{INVALID_HANDLE_VALUE};
 
