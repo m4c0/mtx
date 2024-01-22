@@ -16,7 +16,7 @@ import no;
 struct mtx::mutex::pimpl : no::no {
   CRITICAL_SECTION cs{};
 
-  pimpl() : h{InitializeCriticalSection(&cs)} {}
+  pimpl() { InitializeCriticalSection(&cs); }
   ~pimpl() { DeleteCriticalSection(&cs); }
 };
 
@@ -27,6 +27,25 @@ mtx::mutex::mutex(mutex &&) = default;
 mtx::mutex &mtx::mutex::operator=(mutex &&) = default;
 
 mtx::lock::lock(mtx::mutex *m) : m_mutex{m} {
-  EnterCriticalSection(m_mutex->m_handle->h);
+  EnterCriticalSection(&m_mutex->m_handle->h);
 }
-mtx::lock::~lock() { LeaveCriticalSection(m_mutex->m_handle->h); }
+mtx::lock::~lock() { LeaveCriticalSection(&m_mutex->m_handle->h); }
+
+struct mtx::cond::pimpl : no::no {
+  CONDITION_VARIABLE cv{};
+
+  pimpl() { InitializeConditionVariable(&cv); }
+  ~pimpl() = default;
+};
+
+mtx::cond::cond() : m_handle{new mtx::cond::pimpl{}} {}
+mtx::cond::~cond() = default;
+
+mtx::cond::cond(cond &&) = default;
+mtx::cond &mtx::cond::operator=(cond &&) = default;
+
+void mtx::cond::wait(lock *l) {
+  SleepConditionVariableCS(&m_handle->h, &l->m_mutex->m_handle->h, 100);
+}
+void mtx::cond::wake_one() { WakeConditionVariable(&m_handle->h); }
+void mtx::cond::wake_all() { WakeAllConditionVariable(&m_handle->h); }
