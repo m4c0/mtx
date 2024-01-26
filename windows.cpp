@@ -27,9 +27,9 @@ mtx::mutex::mutex(mutex &&) = default;
 mtx::mutex &mtx::mutex::operator=(mutex &&) = default;
 
 mtx::lock::lock(mtx::mutex *m) : m_mutex{m} {
-  EnterCriticalSection(&m_mutex->m_handle->h);
+  EnterCriticalSection(&m_mutex->m_handle->cs);
 }
-mtx::lock::~lock() { LeaveCriticalSection(&m_mutex->m_handle->h); }
+mtx::lock::~lock() { LeaveCriticalSection(&m_mutex->m_handle->cs); }
 
 struct mtx::cond::pimpl : no::no {
   CONDITION_VARIABLE cv{};
@@ -45,7 +45,7 @@ mtx::cond::cond(cond &&) = default;
 mtx::cond &mtx::cond::operator=(cond &&) = default;
 
 void mtx::cond::wait(lock *l) {
-  SleepConditionVariableCS(&m_handle->h, &l->m_mutex->m_handle->h, 100);
+  SleepConditionVariableCS(&m_handle->cv, &l->m_mutex->m_handle->cs, 100);
 }
-void mtx::cond::wake_one() { WakeConditionVariable(&m_handle->h); }
-void mtx::cond::wake_all() { WakeAllConditionVariable(&m_handle->h); }
+void mtx::cond::wake_one() { WakeConditionVariable(&m_handle->cv); }
+void mtx::cond::wake_all() { WakeAllConditionVariable(&m_handle->cv); }
