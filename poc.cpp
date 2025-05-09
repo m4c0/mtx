@@ -67,9 +67,9 @@ void cond_example() {
   consumer c1{1};
   consumer c2{2};
 
-  c1.start();
-  c2.start();
-  p.start();
+  sith::run_guard c1g { &c1 };
+  sith::run_guard c2g { &c2 };
+  sith::run_guard pg { &p };
 
   sitime::sleep(4);
 }
@@ -93,16 +93,17 @@ public:
     mutex m{};
 
     thread a{&m, 10};
-    a.start();
+    sith::run_guard ag { &a };
 
     thread b{&m, 1};
-    b.start();
+    sith::run_guard bg { &b };
 
     sitime::sleep(1);
   }
 };
 
 int main() {
+#warning this example runs indefinitely sometimes
   thread::example();
   cond_example();
 }
