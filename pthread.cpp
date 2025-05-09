@@ -1,4 +1,5 @@
 module;
+#include <sys/time.h>
 #include <pthread.h>
 
 module mtx;
@@ -42,6 +43,14 @@ void mtx::cond::wait(lock *l) {
   timespec ts{};
   clock_gettime(CLOCK_REALTIME, &ts);
   ts.tv_nsec += 100 * 1000 * 1000;
+  pthread_cond_timedwait(&m_handle->p, &l->m_mutex->m_handle->m, &ts);
+}
+void mtx::cond::wait(lock * l, unsigned seconds) {
+  timeval tv {};
+  timespec ts {};
+  gettimeofday(&tv, nullptr);
+  ts.tv_sec = tv.tv_sec + seconds;
+  ts.tv_nsec = 0;
   pthread_cond_timedwait(&m_handle->p, &l->m_mutex->m_handle->m, &ts);
 }
 void mtx::cond::wake_one() { pthread_cond_signal(&m_handle->p); }

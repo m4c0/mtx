@@ -47,5 +47,8 @@ mtx::cond &mtx::cond::operator=(cond &&) = default;
 void mtx::cond::wait(lock *l) {
   SleepConditionVariableCS(&m_handle->cv, &l->m_mutex->m_handle->cs, 100);
 }
+void mtx::cond::wait(lock * l, unsigned seconds) {
+  SleepConditionVariableCS(&m_handle->cv, &l->m_mutex->m_handle->cs, seconds * 1000);
+}
 void mtx::cond::wake_one() { WakeConditionVariable(&m_handle->cv); }
 void mtx::cond::wake_all() { WakeAllConditionVariable(&m_handle->cv); }

@@ -40,6 +40,7 @@ public:
   cond &operator=(cond &&);
 
   void wait(lock *);
+  void wait(lock *, unsigned seconds);
   void wake_one();
   void wake_all();
 };
